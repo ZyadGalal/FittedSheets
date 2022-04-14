@@ -161,7 +161,7 @@ public class SheetViewController: UIViewController {
         set { self.contentViewController.contentBackgroundColor = newValue }
     }
     
-    public init(controller: UIViewController, sizes: [SheetSize] = [.intrinsic], options: SheetOptions? = nil) {
+    public init(controller: UIViewController, sizes: [SheetSize] = [.intrinsic], options: SheetOptions? = nil, isGestureEnabled: Bool) {
         let options = options ?? SheetOptions.default
         self.contentViewController = SheetContentViewController(childViewController: controller, options: options)
         if #available(iOS 13.0, *) {
@@ -181,6 +181,7 @@ public class SheetViewController: UIViewController {
         self.updateOrderedSizes()
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
+        enablePanGesture(isEnabled: isGestureEnabled)
     }
     
     public required init?(coder: NSCoder) {
@@ -479,7 +480,9 @@ public class SheetViewController: UIViewController {
                 break // Do nothing
         }
     }
-    
+    private func enablePanGesture(isEnabled: Bool) {
+        self.panGestureRecognizer.isEnabled = isEnabled
+    }
     private func registerKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDismissed(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
